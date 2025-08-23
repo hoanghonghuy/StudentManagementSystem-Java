@@ -4,13 +4,15 @@ import main.java.studentmanagement.model.Student;
 import main.java.studentmanagement.service.StudentService;
 import main.java.studentmanagement.utils.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 
 public class Main {
-    public static Student[] studentList =  new Student[Constants.MAX_STUDENTS];
-
-    public static int studentCount = 0;
+//    public static Student[] studentList =  new Student[Constants.MAX_STUDENTS];
+//    public static int studentCount = 0;
+    public static List<Student> studentList = new ArrayList<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

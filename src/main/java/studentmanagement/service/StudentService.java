@@ -15,8 +15,8 @@ public class StudentService {
 
     // Kiểm tra mã sinh viên đã tồn tại trong danh sách chưa
     private boolean isStudentIdExists(String studentId) {
-        for (int i = 0; i < Main.studentCount; i++) {
-            if (Main.studentList[i].getStudentId().equalsIgnoreCase(studentId)) {
+        for (Student student : Main.studentList) {
+            if (student.getStudentId().equalsIgnoreCase(studentId)) {
                 return true;
             }
         }
@@ -25,11 +25,6 @@ public class StudentService {
 
 
     public void createStudent() {
-        if (Main.studentCount >= Constants.MAX_STUDENTS) {
-            System.out.println("Lỗi: Danh sách sinh viên đã đầy, không thể thêm mới.");
-            return;
-        }
-
         System.out.println("\n--- Thêm mới sinh viên ---");
         System.out.println("Nhập thông tin chi tiết: ");
 
@@ -98,8 +93,7 @@ public class StudentService {
 
         Student newStudent = new Student(name, dateOfBirth, address, weight, height, studentId, universityName, startYear, gpa);
 
-        Main.studentList[Main.studentCount] = newStudent;
-        Main.studentCount++;
+        Main.studentList.add(newStudent);
 
         System.out.println("\n THêm sinh viên mới thành công!");
         System.out.println(newStudent.toString());
@@ -108,14 +102,15 @@ public class StudentService {
     public void displayAllStudents() {
         System.out.println("\n--- Danh sách toàn bộ sinh viên ---");
 
-        if (Main.studentCount == 0) {
+        if (Main.studentList.isEmpty()) {
             System.out.println("Danh sách sinh viên rỗng");
             return;
         }
 
-        for (int i = 0; i < Main.studentCount; i++) {
-            System.out.println("STT: " + (i + 1) + ".");
-            System.out.println(Main.studentList[i].toString());
+        int stt = 1;
+        for (Student student : Main.studentList) {
+            System.out.println("STT: " + (stt++) + ".");
+            System.out.println(student.toString());
             System.out.println("---------------------------------");
         }
     }
@@ -123,7 +118,7 @@ public class StudentService {
 
     public void findStudentByStudentId() {
         System.out.println("\n--- Tìm kiếm sinh viên theo Mã SV ---");
-        if (Main.studentCount == 0) {
+        if (Main.studentList.isEmpty()) {
             System.out.println("Danh sách sinh viên rỗng");
             return;
         }
@@ -136,10 +131,10 @@ public class StudentService {
         }
 
         boolean found = false;
-        for (int i = 0; i < Main.studentCount; i++) {
-            if (Main.studentList[i].getStudentId().equalsIgnoreCase(searchStudentId)) {
+        for (Student student : Main.studentList) {
+            if (student.getStudentId().equalsIgnoreCase(searchStudentId)) {
                 System.out.println("Tìm thấy sinh viên: ");
-                System.out.println(Main.studentList[i].toString());
+                System.out.println(student.toString());
                 found = true;
                 break;
             }
@@ -150,9 +145,9 @@ public class StudentService {
     }
 
     private Student findStudentObjectById(int id) {
-        for (int i = 0; i < Main.studentCount; i++) {
-            if (Main.studentList[i].getId() == id) {
-                return Main.studentList[i];
+        for (Student student : Main.studentList) {
+            if (student.getId() == id) {
+                return student;
             }
         }
         return null;
@@ -160,7 +155,7 @@ public class StudentService {
 
     public void updateStudent() {
         System.out.println("\n---Cập nhật thông tin sinh viên ---");
-        if (Main.studentCount == 0) {
+        if (Main.studentList.isEmpty()) {
             System.out.println("Danh sách sinh viên rỗng");
             return;
         }
@@ -298,7 +293,7 @@ public class StudentService {
     public void deleteStudent() {
         System.out.println("\n--- Xóa sinh viên ---");
 
-        if (Main.studentCount == 0) {
+        if (Main.studentList.isEmpty()) {
             System.out.println("Danh sách sinh viên rỗng.");
             return;
         }
@@ -312,31 +307,12 @@ public class StudentService {
             return;
         }
 
-        int foundIndex = -1;
-        for (int i = 0; i < Main.studentCount; i++) {
-            if (Main.studentList[i].getId() == idToDelete) {
-                foundIndex = i;
-                break;
-            }
-        }
-
-        if (foundIndex == -1) {
-            System.out.println("Không tìm thấy sinh viên nào có ID là '" + idToDelete + "'.");
+        Student studentToDelete = findStudentObjectById(idToDelete);
+        if (studentToDelete != null) {
+            Main.studentList.remove(studentToDelete);
+            System.out.println("Xoá thành công sinh viên có Id: '" + idToDelete + "'.");
         } else {
-            System.out.println("Tìm thấy sinh viên sau, sẽ tiến hành xóa:");
-            System.out.println(Main.studentList[foundIndex].toString());
-            // thay sinh viên cần xoá bằng thông tin của sinh viên liền kề sau đó
-            // dịch chuyển cả các sinh viên phía sau nó -1 đơn vị
-            for (int i = foundIndex; i < Main.studentCount - 1; i++) {
-                Main.studentList[i] = Main.studentList[i + 1];
-            }
-            // giảm số lượng sinh viên
-            Main.studentCount--;
-
-            // phần tử cuối thừa
-            Main.studentList[Main.studentCount] = null;
-
-            System.out.println("\n=> Đã xóa thành công sinh viên có ID: " + idToDelete);
+            System.out.println("Không tìm thấy sinh viên có Id: '" + idToDelete + "'.");
         }
     }
 }
