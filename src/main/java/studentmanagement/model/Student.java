@@ -1,5 +1,7 @@
 package main.java.studentmanagement.model;
 
+import main.java.studentmanagement.enums.AcademicRank;
+
 import java.time.LocalDate;
 
 public class Student extends Person {
@@ -7,6 +9,7 @@ public class Student extends Person {
     private String universityName;
     private int startYear;
     private double gpa;
+    private AcademicRank academicRank;
 
     public Student(String name, LocalDate dateOfBirth, String address, double weight, double height,
                    String studentId, String universityName, int startYear, double gpa) {
@@ -15,7 +18,9 @@ public class Student extends Person {
         this.studentId = studentId;
         this.universityName = universityName;
         this.startYear = startYear;
-        this.gpa = gpa;
+
+        // this.gpa = gpa;
+        setGpa(gpa);
     }
 
 
@@ -42,6 +47,7 @@ public class Student extends Person {
     }
     public void setGpa(double gpa) {
         this.gpa = gpa;
+        this.academicRank = calculateAcademicRank(gpa);
     }
 
     @Override
@@ -50,7 +56,24 @@ public class Student extends Person {
                 " Mã Sv: '" + studentId + "'| " +
                 " Trường: '" + universityName + "'| " +
                 " Năm nhập học '" + startYear + "'| " +
-                " ĐTB: '" + gpa + "' ]";
+                " ĐTB: '" + gpa + "'| " +
+                " Học lực: '" + (academicRank != null ? academicRank.getDescription() : "?") + "' ]";
+    }
+
+    private AcademicRank calculateAcademicRank(double gpa) {
+        if (gpa < 3) {
+            return AcademicRank.POOR;
+        } else if (gpa < 5) {
+            return AcademicRank.WEAK;
+        } else if (gpa < 6.5) {
+            return AcademicRank.AVERAGE;
+        } else if (gpa < 7.5) {
+            return AcademicRank.GOOD;
+        } else if (gpa < 9) {
+            return AcademicRank.VERY_GOOD;
+        } else {
+            return AcademicRank.EXCELLENT;
+        }
     }
 
 }
