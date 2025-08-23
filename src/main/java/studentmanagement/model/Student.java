@@ -47,10 +47,10 @@ public class Student extends Person {
     @Override
     public String toString() {
         return "Student [" + super.toString() +
-                ", Mã Sv: '" + studentId + "'| " +
-                ", Trường: '" + universityName + "'| " +
-                ", Năm nhập học '" + startYear + "'| " +
-                ", ĐTB: '" + gpa + "' ]";
+                " Mã Sv: '" + studentId + "'| " +
+                " Trường: '" + universityName + "'| " +
+                " Năm nhập học '" + startYear + "'| " +
+                " ĐTB: '" + gpa + "' ]";
     }
 
 }

@@ -60,11 +60,11 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Id: '" + id +
-                ", Tên: '" + name + "'| " +
-                ", Ngày sinh: " + dateOfBirth + "'| " +
-                ", Địa chỉ: '" + address + "'| " +
-                ", Chiều cao: '" + height + "'| " +
-                ", Cân nặng: '" + weight + "'| \n";
+        return "Id: '" + id + "' |" +
+                " Tên: '" + name + "'| " +
+                " Ngày sinh: " + dateOfBirth + "'| " +
+                " Địa chỉ: '" + address + "'| " +
+                " Chiều cao: '" + height + "'| " +
+                " Cân nặng: '" + weight + "'| \n";
     }
 }

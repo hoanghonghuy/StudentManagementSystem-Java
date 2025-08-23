@@ -3,7 +3,6 @@ import main.java.studentmanagement.Main;
 import main.java.studentmanagement.model.Student;
 import main.java.studentmanagement.utils.Constants;
 
-import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -87,12 +86,12 @@ public class StudentService {
         } while (universityName == null);
 
         do {
-            System.out.println("Lỗi: Nhập năm nhập học");
+            System.out.println("Nhập năm nhập học");
             startYear = Validation.parseStartYear(scanner.nextLine());
         } while (startYear == null);
 
         do {
-            System.out.println("Lỗi: Nhập điểm trung bình tích luỹ: ");
+            System.out.println("Nhập điểm trung bình tích luỹ: ");
             gpa = Validation.parseDouble(scanner.nextLine(), Constants.MIN_GPA, Constants.MAX_GPA);
         } while (gpa == null);
 
@@ -106,4 +105,54 @@ public class StudentService {
         System.out.println(newStudent.toString());
     }
 
+    public void displayAllStudents() {
+        System.out.println("\n--- Danh sách toàn bộ sinh viên ---");
+
+        if (Main.studentCount == 0) {
+            System.out.println("Danh sách sinh viên rỗng");
+            return;
+        }
+
+        for (int i = 0; i < Main.studentCount; i++) {
+            System.out.println("STT: " + (i + 1) + ".");
+            System.out.println(Main.studentList[i].toString());
+            System.out.println("---------------------------------");
+        }
+    }
+
+    public void findStudentByStudentId() {
+        System.out.println("\n--- Tìm kiếm sinh viên theo Mã SV ---");
+        if (Main.studentCount == 0) {
+            System.out.println("Danh sách sinh viên rỗng");
+            return;
+        }
+        System.out.println("Nhập Mã SV của sinh viên cần tìm: ");
+        String searchStudentId = scanner.nextLine().trim();
+
+        if (searchStudentId.isEmpty()) {
+            System.out.println("Lỗi: Mã SV không được để trống.");
+            return;
+        }
+
+        boolean found = false;
+        for (int i = 0; i < Main.studentCount; i++) {
+            if (Main.studentList[i].getStudentId().equalsIgnoreCase(searchStudentId)) {
+                System.out.println("Tìm thấy sinh viên: ");
+                System.out.println(Main.studentList[i].toString());
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("Không tìm thấy sinh viên nào có ID là '" + searchStudentId + "'.");
+        }
+    }
+
+    public void updateStudent() {
+
+    }
+
+    public void deleteStudent() {
+
+    }
 }
