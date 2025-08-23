@@ -19,9 +19,9 @@ public class Main {
             System.out.println("\n--- MENU QUẢN LÝ SINH VIÊN ---");
             System.out.println("1. Thêm mới sinh viên");
             System.out.println("2. Hiển thị danh sách sinh viên");
-            System.out.println("3. Tìm kiếm sinh viên theo Mã SV");
-            System.out.println("4. Cập nhật thông tin sinh viên");
-            System.out.println("5. Xóa sinh viên");
+            System.out.println("3. Tìm kiếm sinh viên theo Mã SV"); // studentId
+            System.out.println("4. Cập nhật thông tin sinh viên"); // id
+            System.out.println("5. Xóa sinh viên"); // id
             System.out.println("0. Thoát chương trình");
             System.out.print("Chọn chức năng: ");
 

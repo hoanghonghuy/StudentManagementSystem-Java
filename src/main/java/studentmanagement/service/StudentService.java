@@ -59,12 +59,12 @@ public class StudentService {
         } while (address == null);
 
         do {
-            System.out.println("Nhập chiều cao: ");
+            System.out.println("Nhập chiều cao (cm): ");
             height = Validation.parseDouble(scanner.nextLine(), Constants.MIN_HEIGHT, Constants.MAX_HEIGHT);
         } while (height == null);
 
         do {
-            System.out.println("Nhập cân nặng: ");
+            System.out.println("Nhập cân nặng (kg): ");
             weight =  Validation.parseDouble(scanner.nextLine(), Constants.MIN_WEIGHT, Constants.MAX_WEIGHT);
         } while (weight == null);
 
@@ -120,6 +120,7 @@ public class StudentService {
         }
     }
 
+
     public void findStudentByStudentId() {
         System.out.println("\n--- Tìm kiếm sinh viên theo Mã SV ---");
         if (Main.studentCount == 0) {
@@ -148,8 +149,150 @@ public class StudentService {
         }
     }
 
-    public void updateStudent() {
+    private Student findStudentObjectById(int id) {
+        for (int i = 0; i < Main.studentCount; i++) {
+            if (Main.studentList[i].getId() == id) {
+                return Main.studentList[i];
+            }
+        }
+        return null;
+    }
 
+    public void updateStudent() {
+        System.out.println("\n---Cập nhật thông tin sinh viên ---");
+        if (Main.studentCount == 0) {
+            System.out.println("Danh sách sinh viên rỗng");
+            return;
+        }
+        System.out.println("Nhập Id của sinh viên cần cập nhật: ");
+        int idToUpdate;
+        try {
+            idToUpdate = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Lỗi: Id phải là một con số.");
+            return;
+        }
+
+        Student studentToUpdate = findStudentObjectById(idToUpdate);
+        if (studentToUpdate == null) {
+            System.out.println("Không tìm thấy sinh viên với Id: '" + idToUpdate + "'.");
+            return;
+        }
+
+        System.out.println("Tìm thấy sinh viên. Thông tin hiện tại là:");
+        System.out.println(studentToUpdate.toString());
+
+        while (true) {
+            System.out.println("\n--- Chọn thông tin cần sửa ---");
+            System.out.println("1. Tên");
+            System.out.println("2. Ngày sinh");
+            System.out.println("3. Địa chỉ");
+            System.out.println("4. Chiều cao");
+            System.out.println("5. Cân nặng");
+            System.out.println("6. Tên trường");
+            System.out.println("7. Năm nhập học");
+            System.out.println("8. Điểm TB");
+            System.out.println("0. Quay lại menu chính");
+            System.out.print("Lựa chọn của bạn: ");
+
+            int choice;
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Lựa chọn không hợp lệ.");
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    String newName;
+                    do {
+                        System.out.println("Nhập tên mới: ");
+                        newName = Validation.validateName(scanner.nextLine());
+                    } while (newName == null);
+                    studentToUpdate.setName(newName);
+                    System.out.println("Cập nhật tên thành công.");
+                    break;
+
+                case 2:
+                    LocalDate newDateOfBirth;
+                    do {
+                        System.out.print("Nhập ngày sinh mới (dd-MM-yyyy): ");
+                        newDateOfBirth = Validation.parseDate(scanner.nextLine());
+                    } while (newDateOfBirth == null);
+                    studentToUpdate.setDateOfBirth(newDateOfBirth);
+                    System.out.println("Cập nhật ngày sinh thành công.");
+                    break;
+
+                case 3:
+                    String newAddress;
+                    do {
+                        System.out.print("Nhập địa chỉ mới: ");
+                        newAddress = Validation.validateAddress(scanner.nextLine());
+                    } while (newAddress == null);
+                    studentToUpdate.setAddress(newAddress);
+                    System.out.println("Cập nhật địa chỉ thành công.");
+                    break;
+                case 4:
+                    Double newHeight;
+                    do {
+                        System.out.print("Nhập chiều cao mới (cm): ");
+                        newHeight = Validation.parseDouble(scanner.nextLine(), Constants.MIN_HEIGHT, Constants.MAX_HEIGHT);
+                    } while (newHeight == null);
+                    studentToUpdate.setHeight(newHeight);
+                    System.out.println("Cập nhật chiều cao thành công.");
+                    break;
+
+                case 5:
+                    Double newWeight;
+                    do {
+                        System.out.print("Nhập cân nặng mới (kg): ");
+                        newWeight = Validation.parseDouble(scanner.nextLine(), Constants.MIN_WEIGHT, Constants.MAX_WEIGHT);
+                    } while (newWeight == null);
+                    studentToUpdate.setWeight(newWeight);
+                    System.out.println("Cập nhật cân nặng thành công.");
+                    break;
+
+                case 6:
+                    String newUniversityName;
+                    do {
+                        System.out.println("Nhập tên trường mới: ");
+                        newUniversityName = Validation.validateUniversityName(scanner.nextLine());
+                    } while (newUniversityName == null);
+                    studentToUpdate.setUniversityName(newUniversityName);
+                    System.out.println("Cập nhật tên trường thành công.");
+                    break;
+
+                case 7:
+                    Integer newStartYear;
+                    do {
+                        System.out.println("Nhập năm nhâp học mới: ");
+                        newStartYear = Validation.parseStartYear(scanner.nextLine());
+                    } while (newStartYear == null);
+                    studentToUpdate.setStartYear(newStartYear);
+                    System.out.println("Cập nhật năm nhập học thành công.");
+                    break;
+
+                case 8:
+                    Double newGpa;
+                    do {
+                        System.out.println("Nhập điểm trung bình tích luỹ mới: ");
+                        newGpa = Validation.parseDouble(scanner.nextLine(), Constants.MIN_GPA, Constants.MAX_GPA);
+                    } while (newGpa == null);
+                    studentToUpdate.setGpa(newGpa);
+                    System.out.println("Cập nhật điểm trung bình tích luỹ thành công.");
+                    break;
+
+                case 0:
+                    System.out.println("\n--- Thông tin sinh viên sau khi cập nhật ---");
+                    System.out.println(studentToUpdate.toString());
+                    return;
+
+                default:
+                    System.out.println("Lựa chọn không hợp lệ, hãy chọn từ 0 - 8.");
+                    break;
+            }
+        }
     }
 
     public void deleteStudent() {
