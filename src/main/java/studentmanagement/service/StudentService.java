@@ -296,6 +296,47 @@ public class StudentService {
     }
 
     public void deleteStudent() {
+        System.out.println("\n--- Xóa sinh viên ---");
 
+        if (Main.studentCount == 0) {
+            System.out.println("Danh sách sinh viên rỗng.");
+            return;
+        }
+
+        System.out.print("Nhập Id của sinh viên cần xóa: ");
+        int idToDelete;
+        try {
+            idToDelete = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Lỗi: ID phải là một con số hợp lệ.");
+            return;
+        }
+
+        int foundIndex = -1;
+        for (int i = 0; i < Main.studentCount; i++) {
+            if (Main.studentList[i].getId() == idToDelete) {
+                foundIndex = i;
+                break;
+            }
+        }
+
+        if (foundIndex == -1) {
+            System.out.println("Không tìm thấy sinh viên nào có ID là '" + idToDelete + "'.");
+        } else {
+            System.out.println("Tìm thấy sinh viên sau, sẽ tiến hành xóa:");
+            System.out.println(Main.studentList[foundIndex].toString());
+            // thay sinh viên cần xoá bằng thông tin của sinh viên liền kề sau đó
+            // dịch chuyển cả các sinh viên phía sau nó -1 đơn vị
+            for (int i = foundIndex; i < Main.studentCount - 1; i++) {
+                Main.studentList[i] = Main.studentList[i + 1];
+            }
+            // giảm số lượng sinh viên
+            Main.studentCount--;
+
+            // phần tử cuối thừa
+            Main.studentList[Main.studentCount] = null;
+
+            System.out.println("\n=> Đã xóa thành công sinh viên có ID: " + idToDelete);
+        }
     }
 }
