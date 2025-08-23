@@ -60,6 +60,10 @@ public class Student extends Person {
                 " Học lực: '" + (academicRank != null ? academicRank.getDescription() : "?") + "' ]";
     }
 
+    public AcademicRank getAcademicRank() {
+        return academicRank;
+    }
+
     private AcademicRank calculateAcademicRank(double gpa) {
         if (gpa < 3) {
             return AcademicRank.POOR;

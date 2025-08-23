@@ -1,9 +1,12 @@
 package main.java.studentmanagement.service;
 import main.java.studentmanagement.Main;
+import main.java.studentmanagement.enums.AcademicRank;
 import main.java.studentmanagement.model.Student;
 import main.java.studentmanagement.utils.Constants;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class StudentService {
@@ -314,5 +317,49 @@ public class StudentService {
         } else {
             System.out.println("Không tìm thấy sinh viên có Id: '" + idToDelete + "'.");
         }
+    }
+
+    public void displayAcademicRankPercentage() {
+        System.out.println("\n--- Thống kê học lực của sinh viên ---");
+        if (Main.studentList.isEmpty()) {
+            System.out.println("Danh sách sinh viên rỗng.");
+            return;
+        }
+
+        Map<AcademicRank, Integer> rankCounts = new HashMap<>();
+
+        // duyệt qua danh sách
+        for (Student student : Main.studentList) {
+            AcademicRank academicRank = student.getAcademicRank();
+
+//            if (rankCounts.containsKey(academicRank)) {
+//                int currentCount = rankCounts.get(academicRank);
+//                currentCount++;
+//                rankCounts.put(academicRank, currentCount);
+//            } else {
+//                rankCounts.put(academicRank, 1);
+//            }
+            // Lấy số đếm hiện tại của academicRank, nếu chưa có thì coi như là 0, sau đó cộng thêm 1
+            rankCounts.put(academicRank, rankCounts.getOrDefault(academicRank, 0) + 1);
+        }
+
+        // hiển thị
+        int totalStudents = Main.studentList.size();
+        System.out.println("Tổng số sinh viên: '" +  totalStudents + "'.\n");
+
+        // mảng chứa enum theo thứ tự
+        AcademicRank[] allAcademicRanks = AcademicRank.values();
+        // duyệt ngược mảng để lấy thứ tự cao - thấp
+        for (int i = allAcademicRanks.length - 1; i >= 0; i--) {
+            AcademicRank academicRank = allAcademicRanks[i];
+
+            // lấy số lượng của loại học lực hiện tại, mặc định = 0
+            int count = rankCounts.getOrDefault(academicRank, 0);
+
+            double percentage = (double) count / (double) totalStudents * 100;
+
+            System.out.printf("- %-15s: %d (%.2f%%)\n", academicRank.getDescription(), count, percentage);
+        }
+
     }
 }

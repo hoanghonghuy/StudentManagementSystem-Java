@@ -24,6 +24,7 @@ public class Main {
             System.out.println("3. Tìm kiếm sinh viên theo Mã SV"); // studentId
             System.out.println("4. Cập nhật thông tin sinh viên"); // id
             System.out.println("5. Xóa sinh viên"); // id
+            System.out.println("6. Thống kê học lực");
             System.out.println("0. Thoát chương trình");
             System.out.print("Chọn chức năng: ");
 
@@ -50,6 +51,9 @@ public class Main {
                     break;
                 case 5:
                     studentService.deleteStudent();
+                    break;
+                case 6:
+                    studentService.displayAcademicRankPercentage();
                     break;
                 case 0:
                     System.out.println("Thoát chương trình!");
