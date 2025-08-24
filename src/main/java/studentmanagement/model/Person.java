@@ -3,14 +3,13 @@ package main.java.studentmanagement.model;
 import java.time.LocalDate;
 
 public class Person {
+    private static int nextId = 1;
     private int id;
     private String name;
     private LocalDate dateOfBirth;
     private String address;
     private double weight;
     private double height;
-
-    private static int nextId = 1;
 
     public Person(String name, LocalDate dateOfBirth, String address, double weight, double height) {
         this.id = nextId++;
@@ -27,7 +26,10 @@ public class Person {
     public void setId(int id) {
         this.id = id;
     }
-    public String getname() {
+    public static void updateNextId(int newNextId) {
+        nextId = newNextId;
+    }
+    public String getName() {
         return name;
     }
     public void setName(String name) {

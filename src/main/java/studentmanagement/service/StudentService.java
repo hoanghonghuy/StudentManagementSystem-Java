@@ -40,32 +40,32 @@ public class StudentService {
         Double gpa;
 
         do {
-            System.out.println("Nhập tên: ");
+            System.out.print("Nhập tên: ");
             name = Validation.validateName(scanner.nextLine());
         }while (name == null);
 
         do {
-            System.out.println("Nhập ngày sinh (dd-MM-yyyy): ");
+            System.out.print("Nhập ngày sinh (dd-MM-yyyy): ");
             dateOfBirth = Validation.parseDate(scanner.nextLine());
         } while (dateOfBirth == null);
 
         do {
-            System.out.println("Nhập địa chỉ: ");
+            System.out.print("Nhập địa chỉ: ");
             address = Validation.validateAddress(scanner.nextLine());
         } while (address == null);
 
         do {
-            System.out.println("Nhập chiều cao (cm): ");
+            System.out.print("Nhập chiều cao (cm): ");
             height = Validation.parseDouble(scanner.nextLine(), Constants.MIN_HEIGHT, Constants.MAX_HEIGHT);
         } while (height == null);
 
         do {
-            System.out.println("Nhập cân nặng (kg): ");
+            System.out.print("Nhập cân nặng (kg): ");
             weight =  Validation.parseDouble(scanner.nextLine(), Constants.MIN_WEIGHT, Constants.MAX_WEIGHT);
         } while (weight == null);
 
         do {
-            System.out.println("Nhập mã sinh viên: ");
+            System.out.print("Nhập mã sinh viên: ");
             String input = scanner.nextLine();
             studentId = Validation.validateStudentId(input);
             // Kiểm tra trùng id
@@ -77,17 +77,17 @@ public class StudentService {
         } while (studentId == null);
 
         do {
-            System.out.println("Nhập tên trường: ");
+            System.out.print("Nhập tên trường: ");
             universityName = Validation.validateUniversityName(scanner.nextLine());
         } while (universityName == null);
 
         do {
-            System.out.println("Nhập năm nhập học");
+            System.out.print("Nhập năm nhập học");
             startYear = Validation.parseStartYear(scanner.nextLine());
         } while (startYear == null);
 
         do {
-            System.out.println("Nhập điểm trung bình tích luỹ: ");
+            System.out.print("Nhập điểm trung bình tích luỹ: ");
             gpa = Validation.parseDouble(scanner.nextLine(), Constants.MIN_GPA, Constants.MAX_GPA);
         } while (gpa == null);
 

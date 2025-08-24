@@ -3,6 +3,7 @@ package main.java.studentmanagement;
 import main.java.studentmanagement.model.Student;
 import main.java.studentmanagement.service.StudentService;
 import main.java.studentmanagement.utils.Constants;
+import main.java.studentmanagement.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Scanner;
 public class Main {
 //    public static Student[] studentList =  new Student[Constants.MAX_STUDENTS];
 //    public static int studentCount = 0;
-    public static List<Student> studentList = new ArrayList<>();
+    public static List<Student> studentList = FileUtils.loadDataFromFile();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -64,6 +65,7 @@ public class Main {
                     studentService.displayStudentByRank();
                     break;
                 case 0:
+                    FileUtils.saveDataToFile(studentList);
                     System.out.println("Thoát chương trình!");
                     scanner.close();
                     return;

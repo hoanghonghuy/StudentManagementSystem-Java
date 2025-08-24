@@ -1,5 +1,7 @@
 package main.java.studentmanagement.utils;
 
+import java.time.format.DateTimeFormatter;
+
 public final class Constants {
     private Constants() {}
 
@@ -17,5 +19,7 @@ public final class Constants {
     public static final double MAX_WEIGHT = 1000.0;
     public static final double MIN_GPA = 0.0;
     public static final double MAX_GPA = 10.0;
+
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 }
 

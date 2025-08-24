@@ -18,9 +18,9 @@ public class Validation {
     }
 
     public static LocalDate parseDate(String input) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         try {
-            LocalDate date = LocalDate.parse(input.trim(),  formatter);
+            LocalDate date = LocalDate.parse(input.trim(),  Constants.DATE_FORMATTER);
             if(date.getYear() < Constants.MIN_BIRTH_YEAR || date.isAfter(LocalDate.now())) {
                 System.out.println("Lỗi: Năm sinh phải từ '" + Constants.MIN_BIRTH_YEAR + "' và không được vượt quá ngày hôm nay!");
                 return null;
