@@ -5,9 +5,7 @@ import main.java.studentmanagement.model.Student;
 import main.java.studentmanagement.utils.Constants;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class StudentService {
     private Scanner scanner;
@@ -319,6 +317,7 @@ public class StudentService {
         }
     }
 
+    // % học lực của sinh viên trong danh sách
     public void displayAcademicRankPercentage() {
         System.out.println("\n--- Thống kê học lực của sinh viên ---");
         if (Main.studentList.isEmpty()) {
@@ -339,7 +338,7 @@ public class StudentService {
 //            } else {
 //                rankCounts.put(academicRank, 1);
 //            }
-            // Lấy số đếm hiện tại của academicRank, nếu chưa có thì coi như là 0, sau đó cộng thêm 1
+            // Lấy số đếm hiện tại của academicRank, nếu chưa có thì là 0, sau đó cộng thêm 1
             rankCounts.put(academicRank, rankCounts.getOrDefault(academicRank, 0) + 1);
         }
 
@@ -361,5 +360,87 @@ public class StudentService {
             System.out.printf("- %-15s: %d (%.2f%%)\n", academicRank.getDescription(), count, percentage);
         }
 
+    }
+
+    // % điểm trung bình của sinh viên trong danh sách
+    public void displayGpaPercentage(){
+        System.out.println("\n--- Thống kê điểm trung bình ---");
+
+        if (Main.studentList.isEmpty()) {
+            System.out.println("Danh sách sinh viên rỗng.");
+            return;
+        }
+
+        // lưu trữ kết quả đems
+        Map<Double, Integer> gpaCounts = new HashMap<>();
+
+        for (Student student : Main.studentList) {
+            Double gpa = student.getGpa();
+            //lấy số điểm hiện tại, nếu chưa có trong Map thì mặc định = 0, sau đó tăng lên 1
+            gpaCounts.put(gpa, gpaCounts.getOrDefault(gpa, 0) + 1);
+        }
+
+        int totalStudents = Main.studentList.size();
+        System.out.println("Tổng số sinh viên: '" +  totalStudents + "'.\n");
+        System.out.println("Kết quả thống kê tần suất điểm: ");
+
+        // duyệt Map lấy cả key, value
+        for (Map.Entry<Double, Integer> entry : gpaCounts.entrySet()) {
+            double gpa = entry.getKey();
+            int count = entry.getValue();
+            double percentage = (double) count / (double) totalStudents * 100;
+
+            System.out.printf("- Điểm %.1f: %d sinh viên (%.2f%%)\n", gpa, count, percentage);
+        }
+    }
+
+    public void displayStudentByRank(){
+        System.out.println("\n--- Hiển thị danh sách sinh viên theo học lực ---");
+
+        if (Main.studentList.isEmpty()) {
+            System.out.println("Danh sách sinh viên rỗng.");
+            return;
+        }
+
+        AcademicRank[] allAcademicRanks = AcademicRank.values();
+        System.out.println("Chọn học lực để hiển thị:");
+
+        for (int i = 0; i < allAcademicRanks.length; i++) {
+            // tạo thứ tự từ 1, 2, 3, ...
+            System.out.printf("%d. %s \n", (i + 1), allAcademicRanks[i].getDescription());
+        }
+        System.out.print("Lựa chọn của bạn: ");
+
+        int choice;
+        try {
+            choice = Integer.parseInt(scanner.nextLine());
+            if (choice < 1 || choice > allAcademicRanks.length) {
+                System.out.println("Lựa chọn không hợp lệ.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Lựa chọn không hợp lệ, vui lòng nhập số.");
+            return;
+        }
+
+        AcademicRank targetAcademicRank = allAcademicRanks[choice - 1];
+        List<Student> foundStudents = new ArrayList<>();
+        for (Student student : Main.studentList) {
+            if (student.getAcademicRank() == targetAcademicRank) {
+                foundStudents.add(student);
+            }
+        }
+
+        if (foundStudents.isEmpty()) {
+            System.out.println("\nKhông tìm thấy sinh viên nào có học lực '" + targetAcademicRank.getDescription() + "'");
+        } else {
+            System.out.println("\n--- Danh sách sinh viên có học lực '" + targetAcademicRank.getDescription() + "' ---");
+            int stt = 1;
+            for (Student student : foundStudents) {
+                System.out.println("STT " + stt++ + ": ");
+                System.out.println(student.toString());
+                System.out.println("--------------------------");
+            }
+        }
     }
 }
