@@ -1,23 +1,42 @@
 package main.java.studentmanagement;
 
 import main.java.studentmanagement.model.Student;
+import main.java.studentmanagement.repository.ArrayListStudentRepository;
+import main.java.studentmanagement.repository.IStudentRepository;
+import main.java.studentmanagement.repository.StaticArrayStudentRepository;
 import main.java.studentmanagement.service.StudentService;
 import main.java.studentmanagement.utils.Constants;
 import main.java.studentmanagement.utils.FileUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
 public class Main {
-//    public static Student[] studentList =  new Student[Constants.MAX_STUDENTS];
-//    public static int studentCount = 0;
-    public static List<Student> studentList = FileUtils.loadDataFromFile();
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        StudentService studentService = new StudentService(scanner);
+        List<Student> loadedStudents = FileUtils.loadDataFromFile();
+
+        System.out.println("Chọn chế độ lưu trữ:");
+        System.out.println("1. Dùng Mảng tĩnh (giới hạn " + Constants.MAX_STUDENTS + " sinh viên)");
+        System.out.println("2. Dùng Mảng động (không giới hạn, linh hoạt)");
+        System.out.print("Lựa chọn của bạn (1 hoặc 2): ");
+
+        IStudentRepository studentRepository = null;
+        while (studentRepository == null) {
+            String storageChoice = scanner.nextLine();
+            if (storageChoice.equals("1")) {
+                studentRepository = new StaticArrayStudentRepository(loadedStudents);
+                System.out.println("Đã chọn dùng mảng tĩnh.");
+            }else if (storageChoice.equals("2")) {
+                studentRepository = new ArrayListStudentRepository(loadedStudents);
+                System.out.println("Đã chọn dùng mảng động");
+            }else{
+                System.out.println("Lựa chọn không hợp lệ, nhập lại (1 hoặc 2)");
+            }
+        }
+
+        StudentService studentService = new StudentService(scanner, studentRepository);
+
         while (true) {
             System.out.println("\n--- MENU QUẢN LÝ SINH VIÊN ---");
             System.out.println("1. Thêm mới sinh viên");
@@ -65,7 +84,7 @@ public class Main {
                     studentService.displayStudentByRank();
                     break;
                 case 0:
-                    FileUtils.saveDataToFile(studentList);
+                    FileUtils.saveDataToFile(studentRepository.getAll());
                     System.out.println("Thoát chương trình!");
                     scanner.close();
                     return;

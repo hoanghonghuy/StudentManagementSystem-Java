@@ -3,7 +3,6 @@ package main.java.studentmanagement.service;
 import main.java.studentmanagement.utils.Constants;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class Validation {
@@ -54,6 +53,7 @@ public class Validation {
         }
         if (studentId.length() != Constants.STUDENT_ID_LENGTH) {
             System.out.println("Lỗi: Mã sinh viên phải có đúng '" + Constants.STUDENT_ID_LENGTH + "' ký tự.");
+            return null;
         }
         return studentId;
     }

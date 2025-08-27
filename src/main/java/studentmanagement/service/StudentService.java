@@ -1,22 +1,24 @@
 package main.java.studentmanagement.service;
-import main.java.studentmanagement.Main;
 import main.java.studentmanagement.enums.AcademicRank;
 import main.java.studentmanagement.model.Student;
 import main.java.studentmanagement.utils.Constants;
+import main.java.studentmanagement.repository.IStudentRepository;
 
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.*;
 
 public class StudentService {
-    private Scanner scanner;
-
-    public StudentService(Scanner scanner) {
+    private final Scanner scanner;
+    private final IStudentRepository studentRepository;
+    public StudentService(Scanner scanner, IStudentRepository studentRepository) {
         this.scanner = scanner;
+        this.studentRepository = studentRepository;
     }
 
     // Kiểm tra mã sinh viên đã tồn tại trong danh sách chưa
     private boolean isStudentIdExists(String studentId) {
-        for (Student student : Main.studentList) {
+        for (Student student : this.studentRepository.getAll()) {
             if (student.getStudentId().equalsIgnoreCase(studentId)) {
                 return true;
             }
@@ -82,7 +84,7 @@ public class StudentService {
         } while (universityName == null);
 
         do {
-            System.out.print("Nhập năm nhập học");
+            System.out.print("Nhập năm nhập học: ");
             startYear = Validation.parseStartYear(scanner.nextLine());
         } while (startYear == null);
 
@@ -94,7 +96,7 @@ public class StudentService {
 
         Student newStudent = new Student(name, dateOfBirth, address, weight, height, studentId, universityName, startYear, gpa);
 
-        Main.studentList.add(newStudent);
+        this.studentRepository.add(newStudent);
 
         System.out.println("\n THêm sinh viên mới thành công!");
         System.out.println(newStudent.toString());
@@ -103,23 +105,22 @@ public class StudentService {
     public void displayAllStudents() {
         System.out.println("\n--- Danh sách toàn bộ sinh viên ---");
 
-        if (Main.studentList.isEmpty()) {
+        if (this.studentRepository.isEmpty()) {
             System.out.println("Danh sách sinh viên rỗng");
             return;
         }
 
         int stt = 1;
-        for (Student student : Main.studentList) {
+        for (Student student : this.studentRepository.getAll()) {
             System.out.println("STT: " + (stt++) + ".");
             System.out.println(student.toString());
             System.out.println("---------------------------------");
         }
     }
 
-
     public void findStudentByStudentId() {
         System.out.println("\n--- Tìm kiếm sinh viên theo Mã SV ---");
-        if (Main.studentList.isEmpty()) {
+        if (this.studentRepository.isEmpty()) {
             System.out.println("Danh sách sinh viên rỗng");
             return;
         }
@@ -131,32 +132,18 @@ public class StudentService {
             return;
         }
 
-        boolean found = false;
-        for (Student student : Main.studentList) {
-            if (student.getStudentId().equalsIgnoreCase(searchStudentId)) {
-                System.out.println("Tìm thấy sinh viên: ");
-                System.out.println(student.toString());
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            System.out.println("Không tìm thấy sinh viên nào có ID là '" + searchStudentId + "'.");
-        }
-    }
+        Student foundStudent = this.studentRepository.findByStudentId(searchStudentId);
+        if (foundStudent != null) {
+            System.out.println("Tìm thấy sinh viên: \n" + foundStudent.toString());
 
-    private Student findStudentObjectById(int id) {
-        for (Student student : Main.studentList) {
-            if (student.getId() == id) {
-                return student;
-            }
+        }else{
+            System.out.println("Không tìm thấy sinh viên nào có mã sinh viên là '" + searchStudentId + "'.");
         }
-        return null;
     }
 
     public void updateStudent() {
         System.out.println("\n---Cập nhật thông tin sinh viên ---");
-        if (Main.studentList.isEmpty()) {
+        if (this.studentRepository.isEmpty()) {
             System.out.println("Danh sách sinh viên rỗng");
             return;
         }
@@ -169,7 +156,7 @@ public class StudentService {
             return;
         }
 
-        Student studentToUpdate = findStudentObjectById(idToUpdate);
+        Student studentToUpdate = this.studentRepository.findById(idToUpdate);
         if (studentToUpdate == null) {
             System.out.println("Không tìm thấy sinh viên với Id: '" + idToUpdate + "'.");
             return;
@@ -185,9 +172,10 @@ public class StudentService {
             System.out.println("3. Địa chỉ");
             System.out.println("4. Chiều cao");
             System.out.println("5. Cân nặng");
-            System.out.println("6. Tên trường");
-            System.out.println("7. Năm nhập học");
-            System.out.println("8. Điểm TB");
+            System.out.println("6. Mã sinh viên");
+            System.out.println("7. Tên trường");
+            System.out.println("8. Năm nhập học");
+            System.out.println("9. Điểm TB");
             System.out.println("0. Quay lại menu chính");
             System.out.print("Lựa chọn của bạn: ");
 
@@ -250,6 +238,28 @@ public class StudentService {
                     break;
 
                 case 6:
+                    String newStudentId;
+                    do {
+                        System.out.print("Nhập vào mã sinh viên mới: ");
+                        String input = scanner.nextLine();
+                        newStudentId = Validation.validateStudentId(input);
+                        if (newStudentId != null &&
+                            // chỉ thực hiện kiểm tra trùng lặp nếu mã sv mới khác với mã sv cũ của chính sv đang cần thay đổi
+                            !newStudentId.equalsIgnoreCase(studentToUpdate.getStudentId()) &&
+                            // kiểm tra xem có trùng với sv nào khác không
+                            isStudentIdExists(newStudentId))
+                        {
+
+                            System.out.println("Lỗi: Mã sinh viên đã tồn tại. Nhập mã khác");
+                            newStudentId = null;
+                        }
+                    }  while (newStudentId == null);
+
+                    studentToUpdate.setStudentId(newStudentId);
+                    System.out.println("Cập nhật mã sinh viên thành công.");
+                    break;
+
+                case 7:
                     String newUniversityName;
                     do {
                         System.out.println("Nhập tên trường mới: ");
@@ -259,7 +269,7 @@ public class StudentService {
                     System.out.println("Cập nhật tên trường thành công.");
                     break;
 
-                case 7:
+                case 8:
                     Integer newStartYear;
                     do {
                         System.out.println("Nhập năm nhâp học mới: ");
@@ -269,7 +279,7 @@ public class StudentService {
                     System.out.println("Cập nhật năm nhập học thành công.");
                     break;
 
-                case 8:
+                case 9:
                     Double newGpa;
                     do {
                         System.out.println("Nhập điểm trung bình tích luỹ mới: ");
@@ -294,7 +304,7 @@ public class StudentService {
     public void deleteStudent() {
         System.out.println("\n--- Xóa sinh viên ---");
 
-        if (Main.studentList.isEmpty()) {
+        if (this.studentRepository.isEmpty()) {
             System.out.println("Danh sách sinh viên rỗng.");
             return;
         }
@@ -308,9 +318,9 @@ public class StudentService {
             return;
         }
 
-        Student studentToDelete = findStudentObjectById(idToDelete);
+        Student studentToDelete = this.studentRepository.findById(idToDelete);
         if (studentToDelete != null) {
-            Main.studentList.remove(studentToDelete);
+            this.studentRepository.remove(studentToDelete);
             System.out.println("Xoá thành công sinh viên có Id: '" + idToDelete + "'.");
         } else {
             System.out.println("Không tìm thấy sinh viên có Id: '" + idToDelete + "'.");
@@ -320,7 +330,7 @@ public class StudentService {
     // % học lực của sinh viên trong danh sách
     public void displayAcademicRankPercentage() {
         System.out.println("\n--- Thống kê học lực của sinh viên ---");
-        if (Main.studentList.isEmpty()) {
+        if (this.studentRepository.isEmpty()) {
             System.out.println("Danh sách sinh viên rỗng.");
             return;
         }
@@ -328,7 +338,7 @@ public class StudentService {
         Map<AcademicRank, Integer> rankCounts = new HashMap<>();
 
         // duyệt qua danh sách
-        for (Student student : Main.studentList) {
+        for (Student student : this.studentRepository.getAll()) {
             AcademicRank academicRank = student.getAcademicRank();
 
 //            if (rankCounts.containsKey(academicRank)) {
@@ -343,7 +353,7 @@ public class StudentService {
         }
 
         // hiển thị
-        int totalStudents = Main.studentList.size();
+        int totalStudents = this.studentRepository.size();
         System.out.println("Tổng số sinh viên: '" +  totalStudents + "'.\n");
 
         // mảng chứa enum theo thứ tự
@@ -366,7 +376,7 @@ public class StudentService {
     public void displayGpaPercentage(){
         System.out.println("\n--- Thống kê điểm trung bình ---");
 
-        if (Main.studentList.isEmpty()) {
+        if (this.studentRepository.isEmpty()) {
             System.out.println("Danh sách sinh viên rỗng.");
             return;
         }
@@ -374,13 +384,13 @@ public class StudentService {
         // lưu trữ kết quả đems
         Map<Double, Integer> gpaCounts = new HashMap<>();
 
-        for (Student student : Main.studentList) {
+        for (Student student : this.studentRepository.getAll()) {
             Double gpa = student.getGpa();
             //lấy số điểm hiện tại, nếu chưa có trong Map thì mặc định = 0, sau đó tăng lên 1
             gpaCounts.put(gpa, gpaCounts.getOrDefault(gpa, 0) + 1);
         }
 
-        int totalStudents = Main.studentList.size();
+        int totalStudents = this.studentRepository.size();
         System.out.println("Tổng số sinh viên: '" +  totalStudents + "'.\n");
         System.out.println("Kết quả thống kê tần suất điểm: ");
 
@@ -397,11 +407,12 @@ public class StudentService {
     public void displayStudentByRank(){
         System.out.println("\n--- Hiển thị danh sách sinh viên theo học lực ---");
 
-        if (Main.studentList.isEmpty()) {
+        if (this.studentRepository.isEmpty()) {
             System.out.println("Danh sách sinh viên rỗng.");
             return;
         }
 
+        // mảng tất cả học lực
         AcademicRank[] allAcademicRanks = AcademicRank.values();
         System.out.println("Chọn học lực để hiển thị:");
 
@@ -424,8 +435,9 @@ public class StudentService {
         }
 
         AcademicRank targetAcademicRank = allAcademicRanks[choice - 1];
+        // danh sách các sinh viên được tìm thấy
         List<Student> foundStudents = new ArrayList<>();
-        for (Student student : Main.studentList) {
+        for (Student student : this.studentRepository.getAll()) {
             if (student.getAcademicRank() == targetAcademicRank) {
                 foundStudents.add(student);
             }

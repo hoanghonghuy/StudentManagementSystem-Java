@@ -1,5 +1,7 @@
 package main.java.studentmanagement.model;
 
+import main.java.studentmanagement.utils.Constants;
+
 import java.time.LocalDate;
 
 public class Person {
@@ -64,7 +66,7 @@ public class Person {
     public String toString() {
         return "Id: '" + id + "' |" +
                 " Tên: '" + name + "'| " +
-                " Ngày sinh: " + dateOfBirth + "'| " +
+                " Ngày sinh: " + dateOfBirth.format(Constants.DATE_FORMATTER) + "'| " +
                 " Địa chỉ: '" + address + "'| " +
                 " Chiều cao: '" + height + "'| " +
                 " Cân nặng: '" + weight + "'| \n";
